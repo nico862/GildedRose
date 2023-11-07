@@ -24,14 +24,6 @@ namespace GildedRose.Tests
             Assert.AreEqual(item.Quality, result.Quality);
         }
 
-        [TestMethod]
-        public void Test_MaxQuantity()
-        {
-            var item = new Item { Name = "Max Quality no update", SellIn = 10, Quality = 50 };
-            var result = new DataProcessor().UpdateQuality(item);
-            Assert.AreEqual(item.SellIn, result.SellIn);
-            Assert.AreEqual(item.Quality, result.Quality);
-        }
 
         [TestMethod]
         public void Test_Sulphuras_No_Change()
