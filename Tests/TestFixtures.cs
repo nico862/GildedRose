@@ -12,6 +12,7 @@ namespace GildedRose.Tests
             var item = new Item { Name = "Quality Zero Item", SellIn = 10, Quality = 0 };
             var result = new DataProcessor().UpdateQuality(item);
             Assert.AreEqual(item.Quality, result.Quality);
+            Assert.AreEqual(item.SellIn, result.SellIn);
         }
 
         [TestMethod]
@@ -20,6 +21,16 @@ namespace GildedRose.Tests
             var item = new Item { Name = "Quality Zero Item", SellIn = 0, Quality = 10 };
             var result = new DataProcessor().UpdateQuality(item);
             Assert.AreEqual(item.SellIn, result.SellIn);
+            Assert.AreEqual(item.Quality, result.Quality);
+        }
+
+        [TestMethod]
+        public void Test_MaxQuantity()
+        {
+            var item = new Item { Name = "Max Quality no update", SellIn = 10, Quality = 50 };
+            var result = new DataProcessor().UpdateQuality(item);
+            Assert.AreEqual(item.SellIn, result.SellIn);
+            Assert.AreEqual(item.Quality, result.Quality);
         }
 
         [TestMethod]
@@ -31,12 +42,30 @@ namespace GildedRose.Tests
         }
 
         [TestMethod]
-        public void Test_Normal_NormalDecrease()
+        public void Test_Normal_Decrease()
         {
-            var item = new Item { Name = "Normal item", SellIn = 10, Quality = 10, ItemCategory = TestData.ItemCategory.Normal };
+            var item = new Item { Name = "Normal item", SellIn = 10, Quality = 10, ItemCategory = TestData.ItemCategory.Normal, SellDate = DateTime.Now.AddDays(2) };
             var result = new DataProcessor().UpdateQuality(item);
             Assert.AreEqual(item.Quality -1, result.Quality);
             Assert.AreEqual(item.SellIn -1, result.SellIn);
+        }
+
+        [TestMethod]
+        public void Test_SellDatePassed()
+        {
+            var item = new Item { Name = "Normal item sell date passed", SellIn = 10, Quality = 10, ItemCategory = TestData.ItemCategory.Normal, SellDate = DateTime.Now.AddDays(-1) };
+            var result = new DataProcessor().UpdateQuality(item);
+            Assert.AreEqual(item.Quality - 2, result.Quality);
+            Assert.AreEqual(item.SellIn - 1, result.SellIn);
+        }
+
+        [TestMethod]
+        public void Test_Quality_NeverNegative()
+        {
+            var item = new Item { Name = "Normal item sell date passed", SellIn = 10, Quality = 1, ItemCategory = TestData.ItemCategory.Normal, SellDate = DateTime.Now.AddDays(-1) };
+            var result = new DataProcessor().UpdateQuality(item);
+            Assert.AreEqual(0, result.Quality);
+            Assert.AreEqual(item.SellIn - 1, result.SellIn);
         }
 
         [TestMethod]
@@ -55,12 +84,21 @@ namespace GildedRose.Tests
             Assert.AreEqual(item.Quality + 2, result.Quality);
         }
 
+
         [TestMethod]
         public void Test_Brie_TripleIncrease()
         {
             var item = new Item { Name = "Aged brie item", SellIn = 20, Quality = 20, ItemCategory = TestData.ItemCategory.Brie, ConcertDate = DateTime.Now.AddDays(5) };
             var result = new DataProcessor().UpdateQuality(item);
             Assert.AreEqual(item.Quality + 3, result.Quality);
+        }
+
+        [TestMethod]
+        public void Test_Quality_NeverMoreThan50()
+        {
+            var item = new Item { Name = "Aged brie item", SellIn = 20, Quality = 49, ItemCategory = TestData.ItemCategory.Brie, ConcertDate = DateTime.Now.AddDays(5) };
+            var result = new DataProcessor().UpdateQuality(item);
+            Assert.AreEqual(50, result.Quality);
         }
 
         [TestMethod]

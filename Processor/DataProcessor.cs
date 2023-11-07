@@ -9,7 +9,7 @@ namespace GildedRose.Processor
         public Item UpdateQuality(Item input)
         {
             var result = new Item();
-            if (input.ItemCategory == TestData.ItemCategory.Sulfurans || input.SellIn == 0 || input.Quality >= 50 || input.Quality == 0)
+            if (input.ItemCategory == TestData.ItemCategory.Sulfurans || input.SellIn == 0 || input.Quality == 0)
             {
                 return input;
             }
@@ -19,7 +19,14 @@ namespace GildedRose.Processor
                 case TestData.ItemCategory.Normal:
                     if (input.SellIn > 0)
                     {
-                        result.Quality = input.Quality -1;
+                        if(input.SellDate < DateTime.Now)
+                        {
+                            result.Quality = input.Quality - 2;
+                        }
+                        else
+                        {
+                            result.Quality = input.Quality - 1;
+                        }
                         result.SellIn = input.SellIn - 1;
                     }
 
@@ -60,8 +67,6 @@ namespace GildedRose.Processor
                     break;
                 default:
                     break;
-
-
             }
 
             return result;

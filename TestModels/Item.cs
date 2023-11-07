@@ -9,10 +9,6 @@ namespace GildedRose.TestModels
         public int Quality { get; set; }
         public ItemCategory ItemCategory { get; set; } = ItemCategory.Normal;
         public DateTime ConcertDate { get; set; }
-
-        public override string ToString()
-        {
-            return Name + ", " + SellIn + ", " + Quality;
-        }
+        public DateTime SellDate { get; set; }
     }
 }
